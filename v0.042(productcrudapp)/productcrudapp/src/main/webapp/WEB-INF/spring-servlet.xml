@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+		
+		<tx:annotation-driven />
+		<context:component-scan base-package="productcrudapp" />
+		
+		<bean name="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	 		<property name="prefix" value="/WEB-INF/views/" />
+	 		<property name="suffix" value=".jsp" />
+	 	</bean>
+	 
+	 	<!-- data Sources  Start -->
+	 	<bean name="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+			<property name="url" value="jdbc:mysql://localhost:3306/productcrud" />
+			<property name="username" value="root" />
+			<property name="password" value="" />
+		</bean>
+	<!-- 	data Sources End -->
+	
+	
+		
+		<!-- LocalSessionFactoryBean start -->
+		<bean name="factory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+			<!-- dataSourse -->
+			<property name="dataSource" ref="ds"></property>
+			<!-- hibernate properties -->
+			<property name="hibernateProperties">
+				<props>
+					<prop key="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
+					<prop key="hibernate.show_sql">true</prop>
+					<prop key="hibernate.hbm2ddl.auto">update</prop>
+				</props>
+			</property>
+			<!-- annotated classes -->
+			<property name="annotatedClasses">
+				<list>
+					<value>productcrudapp.model.Product</value>
+				</list>
+			</property>
+		
+		</bean>
+	<!-- 	LocalSessionFactoryBean  -->
+											  
+		<bean name="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+			<property name="sessionFactory" ref="factory"></property>
+		
+		</bean>
+		
+		<bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+			<property name="sessionFactory" ref="factory"></property>
+		</bean>
+	 	
+	 
+		<!-- <bean name="studentXampp" class="productcrudapp.xampp.ProductXampp">
+			<property name="hibernateTemplate" ref="hibernateTemplate"></property>
+		</bean> -->
+		
+		
+
+</beans>
